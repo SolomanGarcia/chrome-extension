@@ -7,6 +7,7 @@ storage.get(["actionItems"], (data) => {
   let actionItems = data.actionItems;
   createQuickActionListener();
   renderActionItems(actionItems);
+  createUpdateNameDialogListener();
   actionItemsUtils.setProgress();
   chrome.storage.onChanged.addListener(() => {
     actionItemsUtils.setProgress();
@@ -16,6 +17,14 @@ storage.get(["actionItems"], (data) => {
 const renderActionItems = (actionItems) => {
   actionItems.forEach((item) => {
     renderActionItem(item.text, item.id, item.completed, item.website);
+  });
+};
+
+const createUpdateNameDialogListener = () => {
+  let greetingName = document.querySelector(".greeting__name");
+  greetingName.addEventListener("click", () => {
+    // open modal
+    $("#updateNameModal").modal("show");
   });
 };
 

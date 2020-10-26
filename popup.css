@@ -23,6 +23,7 @@ body {
 .greeting__name {
   color: #6c757d;
   font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .progressContainer {
@@ -50,12 +51,6 @@ body {
 
 .actionInput__text {
   margin-bottom: 0.5rem;
-}
-
-.actionInput {
-  
-}
-.actionItems {
 }
 
 #container {
