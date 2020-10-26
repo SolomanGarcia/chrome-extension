@@ -38,6 +38,14 @@ const handleCompletedEventListener = (e) => {
   }
 };
 
+const handleDeleteEventListener = (e) => {
+  const id = e.target.parentElement.parentElement.getAttribute("data-id");
+  const parent = e.target.parentElement.parentElement;
+  // remove from Chrome storage
+  actionItemsUtils.remove(id);
+  parent.remove();
+};
+
 const renderActionItem = (text, id, completed) => {
   let element = document.createElement("div");
   element.classList.add("actionItem__item");
@@ -61,6 +69,7 @@ const renderActionItem = (text, id, completed) => {
   }
 
   element.setAttribute("data-id", id);
+  deleteEl.addEventListener("click", handleDeleteEventListener);
   checkEl.addEventListener("click", handleCompletedEventListener);
   textEl.textContent = text;
   deleteEl.innerHTML = `<i class="fas fa-times"></i>`;
