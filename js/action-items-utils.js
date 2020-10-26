@@ -1,5 +1,5 @@
 class ActionItems {
-  add = (text) => {
+  add = (text, callback) => {
     let actionItem = {
       id: uuidv4(),
       added: new Date().toString(),
@@ -14,13 +14,18 @@ class ActionItems {
       } else {
         items.push(actionItem);
       }
-      chrome.storage.sync.set({
-        actionItems: items
-      });
+      chrome.storage.sync.set(
+        {
+          actionItems: items
+        },
+        () => {
+          callback(actionItem);
+        }
+      );
     });
   };
 
-  remove = (id) => {
+  remove = (id, callback) => {
     storage.get(["actionItems"], (data) => {
       let items = data.actionItems;
       let foundItemIndex = items.findIndex((item) => item.id == id);
@@ -30,9 +35,7 @@ class ActionItems {
           {
             actionItems: items
           },
-          () => {
-            this.setProgress();
-          }
+          callback
         );
       }
     });
@@ -44,14 +47,9 @@ class ActionItems {
       let foundItemIndex = items.findIndex((item) => item.id == id);
       if (foundItemIndex >= 0) {
         items[foundItemIndex].completed = completeStatus;
-        chrome.storage.sync.set(
-          {
-            actionItems: items
-          },
-          () => {
-            this.setProgress();
-          }
-        );
+        chrome.storage.sync.set({
+          actionItems: items
+        });
       }
     });
   };

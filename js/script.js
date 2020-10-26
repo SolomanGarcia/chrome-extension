@@ -5,8 +5,12 @@ let actionItemsUtils = new ActionItems();
 
 storage.get(["actionItems"], (data) => {
   let actionItems = data.actionItems;
+  createQuickActionListener();
   renderActionItems(actionItems);
   actionItemsUtils.setProgress();
+  chrome.storage.onChanged.addListener(() => {
+    actionItemsUtils.setProgress();
+  });
 });
 
 const renderActionItems = (actionItems) => {
@@ -15,13 +19,28 @@ const renderActionItems = (actionItems) => {
   });
 };
 
+const handleQuickActionListener = (e) => {
+  const text = e.target.getAttribute("data-text");
+  actionItemsUtils.add(text, (actionItem) => {
+    renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+  });
+};
+
+const createQuickActionListener = () => {
+  let buttons = document.querySelectorAll(".quick-action");
+  buttons.forEach((button) => {
+    button.addEventListener("click", handleQuickActionListener);
+  });
+};
+
 addItemForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let itemText = addItemForm.elements.namedItem("itemText").value;
   if (itemText) {
-    actionItemsUtils.add(itemText);
-    renderActionItem(itemText);
-    addItemForm.elements.namedItem("itemText").value = "";
+    actionItemsUtils.add(itemText, (actionItem) => {
+      renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+      addItemForm.elements.namedItem("itemText").value = "";
+    });
   }
 });
 
@@ -42,8 +61,9 @@ const handleDeleteEventListener = (e) => {
   const id = e.target.parentElement.parentElement.getAttribute("data-id");
   const parent = e.target.parentElement.parentElement;
   // remove from Chrome storage
-  actionItemsUtils.remove(id);
-  parent.remove();
+  actionItemsUtils.remove(id, () => {
+    parent.remove();
+  });
 };
 
 const renderActionItem = (text, id, completed) => {
