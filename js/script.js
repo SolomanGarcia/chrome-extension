@@ -5,11 +5,12 @@ let storage = chrome.storage.sync;
 storage.get(["actionItems"], (data) => {
   let actionItems = data.actionItems;
   renderActionItems(actionItems);
+  console.log(actionItems);
 });
 
 const renderActionItems = (actionItems) => {
   actionItems.forEach((item) => {
-    renderActionItem(item.text);
+    renderActionItem(item.text, item.id, item.completed);
   });
 };
 
@@ -25,7 +26,7 @@ addItemForm.addEventListener("submit", (e) => {
 
 const add = (text) => {
   let actionItem = {
-    id: 1,
+    id: uuidv4(),
     added: new Date().toString(),
     text: text,
     completed: null
@@ -51,7 +52,28 @@ const add = (text) => {
   });
 };
 
-const renderActionItem = (text) => {
+const markUnmarkCompleted = (id) => {
+  storage.get(["actionItems"], (data) => {
+    let items = data.actionItems;
+    let foundItemIndex = items.findIndex((item) => item.id == id);
+    if (foundItemIndex >= 0) {
+      items[foundItemIndex].completed = true;
+      chrome.storage.sync.set({
+        actionItems: items
+      });
+    }
+  });
+};
+
+const handleCompletedEventListener = (e) => {
+  const id = e.target.parentElement.parentElement.getAttribute("data-id");
+  const parent = e.target.parentElement.parentElement;
+
+  parent.classList.add("completed");
+  markUnmarkCompleted(id);
+};
+
+const renderActionItem = (text, id, completed) => {
   let element = document.createElement("div");
   element.classList.add("actionItem__item");
   let mainElement = document.createElement("div");
@@ -68,6 +90,13 @@ const renderActionItem = (text) => {
       <i class="fas fa-check" aria-hidden="true"></i>
     </div>
   `;
+
+  if (completed) {
+    element.classList.add("completed");
+  }
+
+  element.setAttribute("data-id", id);
+  checkEl.addEventListener("click", handleCompletedEventListener);
   textEl.textContent = text;
   deleteEl.innerHTML = `<i class="fas fa-times"></i>`;
   mainElement.appendChild(checkEl);

@@ -121,6 +121,7 @@ body {
 
 .actionItem__checkbox i {
   color: #56e452;
+  opacity: 0;
 }
 
 .actionItem__check {
@@ -128,6 +129,10 @@ body {
   display: flex;
   justify-content: center;
   cursor: pointer;
+}
+
+.actionItem__check:hover i {
+  opacity: 1;
 }
 
 .actionItem__delete {
@@ -144,4 +149,12 @@ body {
 
 .actionItem__item.completed .actionItem__checkbox {
   border-color: #56e452;
+}
+
+.actionItem__check * {
+  pointer-events: none;
+}
+
+.actionItem__item.completed .actionItem__check i {
+  opacity: 1;
 }
