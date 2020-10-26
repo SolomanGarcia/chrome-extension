@@ -21,8 +21,11 @@ const renderActionItems = (actionItems) => {
 
 const handleQuickActionListener = (e) => {
   const text = e.target.getAttribute("data-text");
-  actionItemsUtils.add(text, (actionItem) => {
-    renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+  const id = e.target.getAttribute("data-id");
+  getCurrentTab().then((tab) => {
+    actionItemsUtils.addQuickActionItem(id, text, tab, (actionItem) => {
+      renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+    });
   });
 };
 
@@ -32,6 +35,18 @@ const createQuickActionListener = () => {
     button.addEventListener("click", handleQuickActionListener);
   });
 };
+
+async function getCurrentTab() {
+  return await new Promise((resolve, reject) => {
+    chrome.tabs.query(
+      // prettier-ignore
+      { 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT },
+      (tabs) => {
+        resolve(tabs[0]);
+      }
+    );
+  });
+}
 
 addItemForm.addEventListener("submit", (e) => {
   e.preventDefault();
