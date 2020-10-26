@@ -5,10 +5,39 @@ addItemForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let itemText = addItemForm.elements.namedItem("itemText").value;
   if (itemText) {
+    add(itemText);
     renderActionItem(itemText);
     addItemForm.elements.namedItem("itemText").value = "";
   }
 });
+
+const add = (text) => {
+  let actionItem = {
+    id: 1,
+    added: new Date().toString(),
+    text: text,
+    completed: null
+  };
+
+  chrome.storage.sync.get(["actionItems"], (data) => {
+    let items = data.actionItems;
+    if (!items) {
+      items = [actionItem];
+    } else {
+      items.push(actionItem);
+    }
+    chrome.storage.sync.set(
+      {
+        actionItems: items
+      },
+      () => {
+        chrome.storage.sync.get(["actionItems"], (data) => {
+          console.log(data);
+        });
+      }
+    );
+  });
+};
 
 const renderActionItem = (text) => {
   let element = document.createElement("div");
