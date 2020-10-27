@@ -99,7 +99,7 @@ addItemForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let itemText = addItemForm.elements.namedItem("itemText").value;
   if (itemText) {
-    actionItemsUtils.add(itemText, (actionItem) => {
+    actionItemsUtils.add(itemText, null, (actionItem) => {
       renderActionItem(
         actionItem.text,
         actionItem.id,
@@ -167,7 +167,7 @@ const renderActionItem = (text, id, completed, website = null) => {
   if (website) {
     let linkContainer = createLinkContainer(
       website.url,
-      website.favIcon,
+      website.fav_icon,
       website.title
     );
     element.appendChild(linkContainer);
@@ -179,7 +179,7 @@ const createLinkContainer = (url, favIcon, title) => {
   let element = document.createElement("div");
   element.classList.add("actionItem__linkContainer");
   element.innerHTML = `
-    <a href="${url} target="_blank">
+    <a href="${url}" target="_blank">
       <div class="actionItem__link">
         <div class="actionItem__favIcon">
           <img src="${favIcon}" alt="" />
