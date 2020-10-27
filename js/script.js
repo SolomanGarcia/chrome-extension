@@ -3,16 +3,24 @@ let itemsList = document.querySelector(".actionItems");
 let storage = chrome.storage.sync;
 let actionItemsUtils = new ActionItems();
 
-storage.get(["actionItems"], (data) => {
+storage.get(["actionItems", "name"], (data) => {
   let actionItems = data.actionItems;
+  let name = data.name;
+  setUsersName(name);
   createQuickActionListener();
   renderActionItems(actionItems);
   createUpdateNameDialogListener();
+  createUpdateNameListener();
   actionItemsUtils.setProgress();
   chrome.storage.onChanged.addListener(() => {
     actionItemsUtils.setProgress();
   });
 });
+
+const setUsersName = (name) => {
+  let newName = name ? name : "Add Name";
+  document.querySelector(".name__value").innerText = newName;
+};
 
 const renderActionItems = (actionItems) => {
   actionItems.forEach((item) => {
@@ -24,8 +32,31 @@ const createUpdateNameDialogListener = () => {
   let greetingName = document.querySelector(".greeting__name");
   greetingName.addEventListener("click", () => {
     // open modal
+    storage.get(["name"], (data) => {
+      let name = data.name ? data.name : "";
+      document.getElementById("inputName").value = name;
+    });
     $("#updateNameModal").modal("show");
   });
+};
+
+const handleUpdateName = (e) => {
+  // get input text
+  const name = document.getElementById("inputName").value;
+  if (name) {
+    // save name
+    actionItemsUtils.saveName(name, () => {
+      // set the user's name in front end
+      setUsersName(name);
+      // close modal
+      $("#updateNameModal").modal("hide");
+    });
+  }
+};
+
+const createUpdateNameListener = () => {
+  let element = document.querySelector("#updateName");
+  element.addEventListener("click", handleUpdateName);
 };
 
 const handleQuickActionListener = (e) => {

@@ -40,6 +40,15 @@ class ActionItems {
     });
   };
 
+  saveName = (name, callback) => {
+    storage.set(
+      {
+        name: name
+      },
+      callback
+    );
+  };
+
   remove = (id, callback) => {
     storage.get(["actionItems"], (data) => {
       let items = data.actionItems;
