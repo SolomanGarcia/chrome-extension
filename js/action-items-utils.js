@@ -86,7 +86,17 @@ class ActionItems {
       completedItems = actionItems.filter((item) => item.completed).length;
       let progress = 0;
       progress = completedItems / totalItems;
+      this.setBrowserBadge(totalItems - completedItems);
       circle.animate(progress);
     });
+  };
+
+  setBrowserBadge = (todoItems) => {
+    let text = `${todoItems}`;
+    if (todoItems > 9) {
+      text = "9+";
+    }
+
+    chrome.browserAction.setBadgeText({ text: text });
   };
 }
