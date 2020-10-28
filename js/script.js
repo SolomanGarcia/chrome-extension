@@ -25,9 +25,30 @@ const setUsersName = (name) => {
 };
 
 const renderActionItems = (actionItems) => {
-  actionItems.forEach((item) => {
+  // filter out completed items from yesterday
+  const filteredItems = filterActionItems(actionItems);
+  filteredItems.forEach((item) => {
     renderActionItem(item.text, item.id, item.completed, item.website);
   });
+  storage.set({
+    actionItems: filteredItems
+  });
+};
+
+const filterActionItems = (actionItems) => {
+  var currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  const filteredItems = actionItems.filter((item) => {
+    if (item.completed) {
+      // if completed date is less than todays date
+      const completedDate = new Date(item.completed);
+      if (completedDate < currentDate) {
+        return false;
+      }
+    }
+    return true;
+  });
+  return filteredItems;
 };
 
 const createUpdateNameDialogListener = () => {
