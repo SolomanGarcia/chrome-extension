@@ -150,9 +150,10 @@ const handleCompletedEventListener = (e) => {
 const handleDeleteEventListener = (e) => {
   const id = e.target.parentElement.parentElement.getAttribute("data-id");
   const parent = e.target.parentElement.parentElement;
+  let jElement = $(`div[data-id="${id}"]`);
   // remove from Chrome storage
   actionItemsUtils.remove(id, () => {
-    parent.remove();
+    animateUp(jElement);
   });
 };
 
@@ -204,6 +205,20 @@ const renderActionItem = (
   itemsList.prepend(element);
   let jElement = $(`div[data-id="${id}"]`);
   animateDown(jElement, animationDuration);
+};
+
+const animateUp = (element) => {
+  let height = element.innerHeight();
+  element.animate(
+    {
+      opacity: "0",
+      marginTop: `-${height}px`
+    },
+    250,
+    () => {
+      element.remove();
+    }
+  );
 };
 
 const animateDown = (element, duration) => {

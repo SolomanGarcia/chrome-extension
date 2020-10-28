@@ -57,6 +57,11 @@ body {
   color: #727272;
 }
 
+.actionInput {
+  background-color: white;
+  z-index: 1000;
+}
+
 .actionInput__inputContainer .form-control:focus {
   box-shadow: none;
   border-color: gray;
@@ -76,7 +81,7 @@ body {
   position: relative;
 }
 
-.actionInput__suggestions {
+.actionInput__suggestions { 
   margin-top: 0.5rem;
 }
 
