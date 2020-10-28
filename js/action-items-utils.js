@@ -85,7 +85,9 @@ class ActionItems {
       let totalItems = actionItems.length;
       completedItems = actionItems.filter((item) => item.completed).length;
       let progress = 0;
-      progress = completedItems / totalItems;
+      if (totalItems > 0) {
+        progress = completedItems / totalItems;
+      }
       this.setBrowserBadge(totalItems - completedItems);
       if (typeof window.circle !== "undefined") circle.animate(progress);
     });
