@@ -41,7 +41,7 @@ class ActionItems {
   };
 
   saveName = (name, callback) => {
-    storage.set(
+    chrome.storage.sync.set(
       {
         name: name
       },
@@ -50,7 +50,7 @@ class ActionItems {
   };
 
   remove = (id, callback) => {
-    storage.get(["actionItems"], (data) => {
+    chrome.storage.sync.get(["actionItems"], (data) => {
       let items = data.actionItems;
       let foundItemIndex = items.findIndex((item) => item.id == id);
       if (foundItemIndex >= 0) {
@@ -66,7 +66,7 @@ class ActionItems {
   };
 
   markUnmarkCompleted = (id, completeStatus) => {
-    storage.get(["actionItems"], (data) => {
+    chrome.storage.sync.get(["actionItems"], (data) => {
       let items = data.actionItems;
       let foundItemIndex = items.findIndex((item) => item.id == id);
       if (foundItemIndex >= 0) {
@@ -79,7 +79,7 @@ class ActionItems {
   };
 
   setProgress = () => {
-    storage.get(["actionItems"], (data) => {
+    chrome.storage.sync.get(["actionItems"], (data) => {
       let actionItems = data.actionItems;
       let completedItems;
       let totalItems = actionItems.length;
@@ -87,7 +87,7 @@ class ActionItems {
       let progress = 0;
       progress = completedItems / totalItems;
       this.setBrowserBadge(totalItems - completedItems);
-      circle.animate(progress);
+      if (typeof window.circle !== "undefined") circle.animate(progress);
     });
   };
 
