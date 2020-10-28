@@ -91,7 +91,8 @@ const handleQuickActionListener = (e) => {
         actionItem.text,
         actionItem.id,
         actionItem.completed,
-        actionItem.website
+        actionItem.website,
+        250
       );
     });
   });
@@ -125,7 +126,8 @@ addItemForm.addEventListener("submit", (e) => {
         actionItem.text,
         actionItem.id,
         actionItem.completed,
-        actionItem.website
+        actionItem.website,
+        250
       );
       addItemForm.elements.namedItem("itemText").value = "";
     });
@@ -154,7 +156,13 @@ const handleDeleteEventListener = (e) => {
   });
 };
 
-const renderActionItem = (text, id, completed, website = null) => {
+const renderActionItem = (
+  text,
+  id,
+  completed,
+  website = null,
+  animationDuration = 450
+) => {
   let element = document.createElement("div");
   element.classList.add("actionItem__item");
   let mainElement = document.createElement("div");
@@ -194,6 +202,19 @@ const renderActionItem = (text, id, completed, website = null) => {
     element.appendChild(linkContainer);
   }
   itemsList.prepend(element);
+  let jElement = $(`div[data-id="${id}"]`);
+  animateDown(jElement, animationDuration);
+};
+
+const animateDown = (element, duration) => {
+  let height = element.innerHeight();
+  element.css({ marginTop: `-${height}px`, opacity: 0 }).animate(
+    {
+      opacity: 1,
+      marginTop: "12px"
+    },
+    duration
+  );
 };
 
 const createLinkContainer = (url, favIcon, title) => {

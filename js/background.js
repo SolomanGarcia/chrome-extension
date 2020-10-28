@@ -6,6 +6,14 @@ chrome.contextMenus.create({
   contexts: ["all"]
 });
 
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason == "install") {
+    chrome.storage.sync.set({
+      ActionItems: []
+    });
+  }
+});
+
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId == "linkSiteMenu") {
     actionItemsUtils.addQuickActionItem(
