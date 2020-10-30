@@ -108,9 +108,8 @@ const createQuickActionListener = () => {
 async function getCurrentTab() {
   return await new Promise((resolve, reject) => {
     chrome.tabs.query(
-      // prettier-ignore
-      { 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT },
-      (tabs) => {
+      { active: true, windowId: chrome.windows.WINDOW_ID_CURRENT },
+      function (tabs) {
         resolve(tabs[0]);
       }
     );
